@@ -13,9 +13,9 @@ public class PlayerController implements Runnable{
     public void update(double delta) {
         if (controlsListener != null){
             if (controlsListener.isKeyPressed(KeyEvent.VK_UP)) {
-                moveUp(delta);
+                moveUp(Constants.DELTA);
             } else if (controlsListener.isKeyPressed(KeyEvent.VK_DOWN)) {
-                movDown(delta);
+                movDown(Constants.DELTA);
             }
         }
     }
@@ -34,6 +34,7 @@ public class PlayerController implements Runnable{
 
     @Override
     public void run() {
-
+        System.out.println(Thread.currentThread());
+        update(Constants.DELTA);
     }
 }

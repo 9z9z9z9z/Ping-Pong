@@ -7,6 +7,9 @@ public class Frame extends JFrame implements Runnable {
     public Graphics2D graphics2D;
     public Rect firstPlayer, secondPlayer, ball, line;
     public ControlsListener controlsListener = new ControlsListener();
+    Thread ball_thread;
+    Thread player_thread;
+    Thread ai_thread;
     public boolean isRunning = true;
     public PlayerController playerController1;
     public AIController aiController;
@@ -43,8 +46,15 @@ public class Frame extends JFrame implements Runnable {
 
         this.playerController1 = new PlayerController(firstPlayer, controlsListener);
         this.aiController = new AIController(new PlayerController(secondPlayer), ball);
+
+        ball_thread = new Thread(ballObj);
+        player_thread = new Thread(playerController1);
+        ai_thread = new Thread(aiController);
     }
     public void update(double delta) {
+        if (flag) { ball_thread.start();
+            player_thread.start();
+            ai_thread.start(); }
         Image image = createImage(getWidth(), getHeight());
         Graphics graphic = image.getGraphics();
         this.draw(graphic);
@@ -55,13 +65,8 @@ public class Frame extends JFrame implements Runnable {
                 throw new RuntimeException(e);
             }
         }
-        //Thread ball_thread = new Thread(ballObj);
-        Thread player_thread = new Thread(playerController1);
-        Thread ai_thread = new Thread(aiController);
         graphics2D.drawImage(image, 0, 0, this);
-        //ball_thread.start();
-        player_thread.start();
-        ai_thread.start();
+
         ballObj.update(delta);
         playerController1.update(delta);
         aiController.update(delta);
@@ -87,10 +92,9 @@ public class Frame extends JFrame implements Runnable {
         while (isRunning) {
             double time = TimeControl.getPeriod();
             double delta = time - lastFrameTime;
-            System.out.println(delta);
             lastFrameTime = time;
-            flag = false;
             update(delta);
+            flag = false;
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {

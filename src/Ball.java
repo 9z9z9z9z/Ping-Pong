@@ -1,9 +1,9 @@
-public class Ball{
+public class Ball implements Runnable{
     public Rect rect;
     public Rect leftPaddle, rightPaddle;
     MyText rightScore, leftScore;
     private double vy = 100.0;
-    private double vx = -250.0;
+    private double vx = -700.0;
 
     public Ball(Rect rect, Rect leftPaddle, Rect rightPaddle, MyText leftScore, MyText rightScore) {
         this.rect = rect;
@@ -20,19 +20,19 @@ public class Ball{
     }
     public void update(double delta) {
         if (this.vy > 0) {
-            if (this.rect.y + (vy * delta) + this.rect.height > Constants.SCREEN_HEIGHT) {
+            if (this.rect.y + (vy * Constants.DELTA) + this.rect.height > Constants.SCREEN_HEIGHT) {
                 this.vy *= -1.0;
             }
         } else if (this.vy < 0) {
-            if (this.rect.y + (vy * delta) < Constants.BAR_HEIGHT + 35) {
+            if (this.rect.y + (vy * Constants.DELTA) < Constants.BAR_HEIGHT + 35) {
                 this.vy *= -1.0;
             }
         }
         if (vx < 0) {
-            if (this.rect.x + (vx * delta) < this.leftPaddle.x + this.leftPaddle.width &&
-                    this.rect.x + (vx * delta) > this.leftPaddle.x &&
-                    this.rect.y + (vy * delta) > this.leftPaddle.y &&
-                    this.rect.y + (vy * delta) < this.leftPaddle.y + this.leftPaddle.height) {
+            if (this.rect.x + (vx * Constants.DELTA) < this.leftPaddle.x + this.leftPaddle.width &&
+                    this.rect.x + (vx * Constants.DELTA) > this.leftPaddle.x &&
+                    this.rect.y + (vy * Constants.DELTA) > this.leftPaddle.y &&
+                    this.rect.y + (vy * Constants.DELTA) < this.leftPaddle.y + this.leftPaddle.height) {
 
                 double theta = calculateNewAngle(this.leftPaddle);
                 double newVx = Math.abs(Math.cos(theta) * Constants.BALL_SPEED);
@@ -44,10 +44,10 @@ public class Ball{
 
             }
         } else if (vx > 0) {
-            if (this.rect.x + (vx * delta) + this.rect.width > this.rightPaddle.x &&
-                    this.rect.x + (vx * delta) < this.rightPaddle.x + this.rightPaddle.width &&
-                    this.rect.y + (vy * delta) > this.rightPaddle.y &&
-                    this.rect.y + (vy * delta) < this.rightPaddle.y + this.rightPaddle.height) {
+            if (this.rect.x + (vx * Constants.DELTA) + this.rect.width > this.rightPaddle.x &&
+                    this.rect.x + (vx * Constants.DELTA) < this.rightPaddle.x + this.rightPaddle.width &&
+                    this.rect.y + (vy * Constants.DELTA) + this.rect.width > this.rightPaddle.y &&
+                    this.rect.y + (vy * Constants.DELTA) < this.rightPaddle.y + this.rightPaddle.height) {
 
                 double theta = calculateNewAngle(this.rightPaddle);
                 double newVx = Math.abs(Math.cos(theta) * Constants.BALL_SPEED);
@@ -61,8 +61,8 @@ public class Ball{
         }
 
         // Movements
-        this.rect.x += vx * delta;
-        this.rect.y += vy * delta;
+        this.rect.x += vx * Constants.DELTA;
+        this.rect.y += vy * Constants.DELTA;
 
         if (this.rect.x + this.rect.width < leftPaddle.x) {
             int right_score = Integer.parseInt(rightScore.score);
@@ -94,5 +94,11 @@ public class Ball{
             this.rightPaddle.y = Constants.SCREEN_HEIGHT / 2 - Constants.PADDLE_HEIGHT / 2;
         }
 
+    }
+
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread());
+        update(Constants.DELTA);
     }
 }

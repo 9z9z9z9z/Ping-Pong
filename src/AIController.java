@@ -8,17 +8,18 @@ public class AIController implements Runnable{
     }
 
     public void update(double delta) {
-        playerController.update(delta);
+        playerController.update(Constants.DELTA);
 
         if (ball.y < playerController.rect.y) {
-            playerController.moveUp(delta);
+            playerController.moveUp(Constants.DELTA);
         } else if (ball.y + ball.height > playerController.rect.y + playerController.rect.height) {
-            playerController.movDown(delta);
+            playerController.movDown(Constants.DELTA);
         }
     }
 
     @Override
     public void run() {
-
+        System.out.println(Thread.currentThread());
+        update(Constants.DELTA);
     }
 }
